@@ -1,0 +1,99 @@
+<!Doctype html>
+<html lang = "es">
+    {% load static %}
+    <head>
+        <title>Creacion de encuesta</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link href = "{% static 'poll/index.css' %}" rel = "stylesheet">
+        <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel = "stylesheet">
+
+
+    </head>
+    <body>
+        <main class = "card w-75 m-auto mb-5 pb-5">
+            <h1 class = "h1 m-auto pt-5 mb-5">Creacion de encuesta</h1>
+            {% csrf_token %}
+            <div class = "card w-75 m-auto" >
+                <div class = "card-header">
+                    <h2>Informacion General</h2>
+                </div>
+                <div class = "card-body">
+                    <div>
+                        <label for = "name_poll" class = "form-label">Nombre de la encuesta</label>
+                        <input type="text" name="name_poll" id="name_poll" class = "form-control" placeholder="Encuesta numero uno">
+                        <div class = "invalid-feedback" id = "name_poll_error">
+                        </div>
+                    </div>
+                    <div>
+                        <label for = "objetive_poll" class = "form-label">Objetivo de la encuesta</label>
+                        <textarea id = "objetive_poll" class = "form-control" placeholder="Objetivo de la encuesta que se esta creando"></textarea>
+                        <div class = "invalid-feedback" id = "objetive_poll_error">
+                        </div>
+                    </div>
+                    <div>
+                        <label for = "instructions_poll" class = "form-label">Instrucciones de la encuesta</label>
+                        <textarea id = "instructions_poll" class = "form-control" placeholder="Instrucciones de la encuesta que se esta creando"></textarea>
+                        <div class = "invalid-feedback" id = "instructions_poll_error">
+                        </div>
+                    </div>
+                    <div>
+                        <label for = "date_start_poll" class = "form-label">Fecha de inicio de la encuesta</label>
+                        <input type = "date" id = "date_start_poll" class = "form-control">
+                        <div class = "invalid-feedback" id = "date_start_poll_error">
+                        </div>
+                    </div>
+                    <div>
+                        <label for = "date_end_poll" class = "form-label">Fecha de finalizacion de la encuesta</label>
+                        <input type = "date" id = "date_end_poll" class = "form-control">
+                        <div class = "invalid-feedback" id = "date_end_poll_error">
+                        </div>
+                    </div>
+                    <div>
+                        <label for = "limit_sample_poll" class = "form-label">Limite de muestra</label>
+                        <input type = "number" id = "limit_sample_poll" class = "form-control" min="0" max="50000000" placeholder="Numero de respuestas maximas">
+                        <div class = "invalid-feedback" id = "limit_sample_poll_error">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class = "card mb-5 mt-5 m-auto w-75">
+                <div class = "card-header">
+                    <h2>Preguntas</h2>
+                </div>
+                <div class = "card-body">
+                    <div class = "containers__question" id = "questions"></div>
+                    <div class="alert-danger alert" id = "question_error" style="display: none"></div>
+                </div>
+                <div class = "card-header">
+                    <button id = "save-poll" class = "btn btn-success">Guardar</button>
+                </div>
+            </div>
+
+            <div class = "card mt-5 m-auto w-75">
+                <div class ="card-header">
+                    <h2>Agregar Pregunta</h2>
+                </div>
+                <div class = "card-body">
+                    <div class = "containers__add">
+                        <label for = "question" class = "form-label">Pregunta</label>
+                        <input type = "text" id = "question" placeholder = "Escribe tu pregunta" class = "form-control">
+                        <label for = "type_question" class = "form-label">Tipo de pregunta</label>
+                        <select id = "type_question" class = "form-control">
+                        </select>
+                        <div class = "containers__options" id = "id_options" style = "display: none">
+                            <label for = "number_options" class = "form-label">Opciones</label>
+                            <input type = "text" id = "number_options" placeholder = "Ingrese sus opciones separadas por comas" class = "form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class = "card-footer">
+                    <button id = "add_question" class = "btn btn-primary">Agregar</button>
+                </div>
+            </div>
+        </main>
+    </body>
+    <script src = "{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src = "{% static 'poll/index.js' %}"></script>
+</html>
