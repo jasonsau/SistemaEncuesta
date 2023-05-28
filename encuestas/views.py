@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return "Hello Wordl"
+    return HttpResponse("Hello, world. You're at the polls index.")
 
 
 def hello_word(request):

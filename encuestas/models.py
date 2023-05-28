@@ -61,9 +61,10 @@ class Polls(models.Model):
     date_created_poll = models.DateTimeField(auto_created=True)
     description_poll = models.TextField(max_length=500)
     instructions_poll = models.TextField(max_length=500)
+    date_start_poll = models.DateTimeField()
     date_end_poll = models.DateTimeField()
-    token_poll = models.TextField(max_length=255)
-    limit_sample_poll = models.IntegerField(default=0)
+    token_poll = models.TextField(max_length=255, unique=True)
+    limit_sample_poll = models.IntegerField(default=10000)
     user_poll = models.ForeignKey(Persons, on_delete=models.CASCADE)
 
 
@@ -83,9 +84,11 @@ class Questions(models.Model):
 class OptionsQuestion(models.Model):
     id_option_question = models.AutoField(primary_key=True)
     question_option_question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    title_option_question = models.TextField(max_length=250)
     name_option_question = models.TextField(max_length=50)
     description_option_question = models.TextField(max_length=250, null=True)
-    value_option_question = models.IntegerField(default=0)
+    value_option_question = models.TextField(default="")
+    id_option = models.TextField(max_length=100, null=True)
     order_option_question = models.IntegerField(default=0, null=True)
 
 
