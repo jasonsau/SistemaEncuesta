@@ -1,0 +1,75 @@
+<!Doctype html>
+<html lang = "es">
+    {% load static %}
+    <head>
+        <title id = "title_poll">Responder encuesta</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link href = "{% static 'poll/index.css' %}" rel = "stylesheet">
+        <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel = "stylesheet">
+    </head>
+    <body>
+        <main class = "card w-75 m-auto mb-5 pb-5">
+            <h1 class = "h1 m-auto pt-5 mb-5" id = "title_poll_h1">Nombre de la encuesta</h1>
+            {% csrf_token %}
+
+            <div class = "card w-75 m-auto">
+                <div class = "card-header">
+                    <h2>Informacion de la encuesta</h2>
+                </div>
+                <div class = "card-body">
+                    <div>
+                        <label for = "objetive_poll" class = "form-label">Objetivo de la encuesta</label>
+                        <textarea id = "objetive_poll" class = "form-control" readonly></textarea>
+                    </div>
+                    <div>
+                        <label for = "instructions_poll" class = "form-label">Instrucciones de la encuesta</label>
+                        <textarea id = "instructions_poll" class = "form-control" readonly></textarea>
+                    </div>
+                    <div>
+                        <label for = "date_start_poll" class = "form-label">Fecha de inicio de la encuesta</label>
+                        <input type = "date" id = "date_start_poll" class = "form-control">
+                    </div>
+                    <div>
+                        <label for = "date_end_poll" class = "form-label">Fecha de finalizacion de la encuesta</label>
+                        <input type = "date" id = "date_end_poll" class = "form-control" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "card w-75 m-auto mt-5">
+                <div class = "card-header">
+                    <h2>Informacion del encuestado</h2>
+                </div>
+                <div class = "card-body">
+                    <div>
+                        <label for = "name_person" class = "form-label">Nombre del encuestado</label>
+                        <input type = "text" id = "name_person" class = "form-control">
+                    </div>
+                    <div>
+                        <label for = "email_person" class = "form-label">Correo del encuestado</label>
+                        <input type = "email" id = "email_person" class = "form-control">
+                    </div>
+                    <div>
+                        <label for = "phone_poll" class = "form-label">Telefono del encuestado</label>
+                        <input type = "text" id = "phone_poll" class = "form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class = "card w-75 m-auto mt-5 mb-5">
+                <div class = "card-header">
+                    <h2>Preguntas</h2>
+                </div>
+                <div class = "card-body">
+                    <div class = "containers__question" id = "questions"></div>
+                </div>
+            </div>
+
+        </main>
+    </body>
+    <script src = "{% static 'poll/GetPoll/index.js' %}">
+    </script>
+</html>
+
