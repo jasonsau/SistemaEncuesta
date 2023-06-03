@@ -44,16 +44,23 @@
                 </div>
                 <div class = "card-body">
                     <div>
-                        <label for = "name_person" class = "form-label">Nombre del encuestado</label>
-                        <input type = "text" id = "name_person" class = "form-control">
+                        <label for = "name_answer" class = "form-label">Nombre del encuestado</label>
+                        <input type = "text" id = "name_answer" class = "form-control">
                     </div>
                     <div>
-                        <label for = "email_person" class = "form-label">Correo del encuestado</label>
-                        <input type = "email" id = "email_person" class = "form-control">
+                        <label for = "email_answer" class = "form-label">Correo del encuestado</label>
+                        <input type = "email" id = "email_answer" class = "form-control">
                     </div>
                     <div>
-                        <label for = "phone_poll" class = "form-label">Telefono del encuestado</label>
-                        <input type = "text" id = "phone_poll" class = "form-control">
+                        <label for = "genre_answer" class = "form-label">Telefono del encuestado</label>
+                        <select class = "form-select" id = "genre_answer">
+                            <option value = "M">Masculino</option>
+                            <option value = "F">Femenino</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for = "birth_date_answer" class = "form-label">Fecha de nacimiento del encuestado</label>
+                        <input type="date" id = "birth_date_answer" class = "form-control">
                     </div>
                 </div>
             </div>
@@ -67,6 +74,11 @@
                 </div>
             </div>
 
+            {% if data.response == True %}
+            <div class="card-footer">
+                <button class = "btn btn-primary" id = "btn_send_poll">Enviar encuesta</button>
+            </div>
+            {% endif %}
         </main>
     </body>
     <script src = "{% static 'poll/GetPoll/index.js' %}">

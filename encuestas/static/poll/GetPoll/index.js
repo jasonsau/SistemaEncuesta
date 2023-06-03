@@ -4,6 +4,7 @@ const titlePoll = document.querySelector('#title_poll');
 const titlePollH1 = document.querySelector('#title_poll_h1');
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]');
 const questions = document.querySelector('#questions');
+const btnSendPoll = document.querySelector('#btn_send_poll');
 let tokenPoll = '';
 let options = '';
 
@@ -34,22 +35,19 @@ function getDataPoll() {
 }
 
 function returnHtmlTemplate(typeQuestion, optionsQuestion, title) {
-    console.log("Entra a una funcion")
-    console.log(typeQuestion)
-    console.log(optionsQuestion)
     options = '';
     let titleQuestion = `<div class = "title_question"><h3 class = "h5">${title}</h3></div>`;
     console.log("titulo de la question")
     console.log(titleQuestion)
     if(typeQuestion === 1) {
-        options = `<div><input type = "text" class = "form-control" id = "${optionsQuestion[0].id_question}" name="${optionsQuestion[0].name_option}"></div>`;
+        options = `<div><input type = "text" class = "form-control" id = "${optionsQuestion[0].id_question}" name="${optionsQuestion[0].name_option}" aria-event="option"></div>`;
     } else if(typeQuestion === 3) {
         for(let i = 0; i < optionsQuestion.length; i++) {
-            options += `<div class = "form-check"><input type = "radio" class = "form-check-input" id = "${optionsQuestion[i].id_question}" name="${optionsQuestion[i].name_option}" value = "${optionsQuestion[i].value_option}"><label for = "${optionsQuestion[i].id_question}" class = "form-check-label">${optionsQuestion[i].title_option}</label></div>`;
+            options += `<div class = "form-check"><input type = "radio" class = "form-check-input" id = "${optionsQuestion[i].id_question}" name="${optionsQuestion[i].name_option}" value = "${optionsQuestion[i].value_option}" aria-event="option"><label for = "${optionsQuestion[i].id_question}" class = "form-check-label">${optionsQuestion[i].title_option}</label></div>`;
         }
     } else if(typeQuestion === 2) {
         for(let i = 0; i < optionsQuestion.length; i++) {
-            options += `<div class = "form-check"><input type = "checkbox" class = "form-check-input" id = "${optionsQuestion[i].id_question}" name="${optionsQuestion[i].name_option}" value = "${optionsQuestion[i].value_option}"><label for = "${optionsQuestion[i].id_question}" class = "form-check-label">${optionsQuestion[i].title_option}</label></div>`;
+            options += `<div class = "form-check"><input type = "checkbox" class = "form-check-input" id = "${optionsQuestion[i].id_question}" name="${optionsQuestion[i].name_option}" value = "${optionsQuestion[i].value_option}"><label for = "${optionsQuestion[i].id_question}" class = "form-check-label" aria-event="option">${optionsQuestion[i].title_option}</label></div>`;
         }
     } else {
         return '';
@@ -57,4 +55,24 @@ function returnHtmlTemplate(typeQuestion, optionsQuestion, title) {
     return `<div class = "mt-3 mb-3">${titleQuestion}${options}</div>`
 }
 
-getDataPoll()
+
+function responsePoll() {
+    if(!btnSendPoll) {
+        console.log("Solo es una previsualizacion")
+        return;
+    }
+    setTimeout(() => {
+        let arrayOptions = [...document.querySelectorAll('[aria-event=option]')];
+        arrayOptions.forEach(option => {
+            option.addEventListener('input', (e) => {
+                console.log(e.target)
+            });
+        });
+
+    }, 500)
+
+
+}
+
+getDataPoll();
+responsePoll();

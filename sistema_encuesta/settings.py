@@ -79,10 +79,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'database': 'encuesta',
-            'user': 'root',
-            'password': 'root',
+            'user': 'encuesta',
+            'password': 'encuesta',
             'host': 'jstomcat.com',
-            'port': 3003
+            'port': 3001
 
         }
     }
