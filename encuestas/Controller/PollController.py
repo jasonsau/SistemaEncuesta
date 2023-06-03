@@ -5,6 +5,10 @@ import json
 from django.http import HttpResponse
 from ..models import Questions, Polls, OptionsQuestion, TypeQuestion, Persons
 from django.shortcuts import render
+from django.db import connection
+from django.core import serializers
+
+cursor = connection.cursor()
 
 
 def create_poll(request):
@@ -12,6 +16,18 @@ def create_poll(request):
 
 
 def store_poll(request):
+    user = Persons.objects.filter(id_person=1).first()
+    data_json: dict = json.loads(request.body)
+    data_json['general']['token_poll'] = generate_token_random(data_json['general']['name_poll'])
+    data_json['general']['user_poll_id'] = user.id_person
+    print(json.dumps(data_json))
+    id_poll: int = 0
+    cursor.execute('call procedure_save_poll(%s, %s)', [json.dumps(data_json), id_poll])
+    print(str_data)
+    return HttpResponse(json.dumps({"test": "Esta es una prueba"}))
+
+
+def store_poll_test(request):
     if request.method == 'GET' or request.method == 'PUT' or request.method == 'DELETE':
         return HttpResponse("Method not allowed")
 
@@ -62,7 +78,19 @@ def store_poll(request):
 
 
 def get_poll(request, token_poll: str):
+    data: dict = {
+        'response': False,
+    }
+
+    return render(request, 'poll/get_poll.html', {'data': data})
+
+
+def response_poll(request, token_poll: str):
     poll = Polls.objects.filter(token_poll=token_poll).first()
+    data: dict = {
+        'response': True,
+    }
+
     if poll is None:
         return HttpResponse("La encuesta no existe")
 
@@ -72,7 +100,11 @@ def get_poll(request, token_poll: str):
     if str(poll.date_end_poll) < str(datetime.datetime.now()):
         return HttpResponse("La encuesta ya finalizo")
 
-    return render(request, 'poll/get_poll.html')
+    return render(request, 'poll/get_poll.html', {'data': data})
+
+
+def store_answer(request, token_poll: str):
+    poll = Polls.objects.filter(token_poll=token_poll).first()
 
 
 def get_data_poll(request, token_poll: str):
@@ -113,6 +145,24 @@ def get_data_poll(request, token_poll: str):
 
 def get_template_option_unique(request):
     return render(request, 'poll/option_unique.html')
+
+
+def get_type_question(request):
+    type_question = TypeQuestion.objects.all()
+
+    data: list = []
+    data_response: dict = {
+        'status': 'Success',
+        'data': []
+    }
+
+    for type in type_question:
+        data.append({
+            'id_type_question': type.id_type_question,
+            'name_type_question': type.name_type_question,
+        })
+    data_response['data'] = data
+    return HttpResponse(json.dumps(data_response), content_type='application/json')
 
 
 def generate_token_random(title_question: str) -> str:
