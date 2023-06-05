@@ -1,5 +1,5 @@
 DELIMITER  //
-CREATE OR REPLACE PROCEDURE procedure_save_poll(IN json_poll JSON, OUT id_poll INT)
+CREATE OR REPLACE PROCEDURE procedure_save_poll(IN json_poll JSON)
 BEGIN
     DECLARE json_poll_general JSON DEFAULT JSON_OBJECT();
     DECLARE json_poll_questions JSON DEFAULT JSON_ARRAY();
@@ -23,7 +23,8 @@ BEGIN
         date_end_poll,
         token_poll,
         limit_sample_poll,
-        user_poll_id
+        user_poll_id,
+        public_poll
     ) VALUES (
                  SYSDATE(),
                  JSON_VALUE(json_poll_general, '$.name_poll'),
@@ -34,7 +35,8 @@ BEGIN
                  JSON_VALUE(json_poll_general, '$.date_end_poll'),
                  JSON_VALUE(json_poll_general, '$.token_poll'),
                  JSON_VALUE(json_poll_general, '$.limit_sample_poll'),
-                 JSON_VALUE(json_poll_general, '$.user_poll_id')
+                 JSON_VALUE(json_poll_general, '$.user_poll_id'),
+                 false
              );
     set @id_poll = LAST_INSERT_ID();
     while count_questions < len_json_poll_questions do

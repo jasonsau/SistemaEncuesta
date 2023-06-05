@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from ..models import Questions, Polls, OptionsQuestion, TypeQuestion, Persons
 from django.shortcuts import render
 from django.db import connection
-from django.core import serializers
+from django.contrib.auth.decorators import login_required
+from ..Controller.Auth.AuthController import check_permissions
 
 cursor = connection.cursor()
 
@@ -15,16 +16,26 @@ def create_poll(request):
     return render(request, 'poll/create_poll.html')
 
 
+@login_required(login_url='/login')
 def store_poll(request):
-    user = Persons.objects.filter(id_person=1).first()
+
     data_json: dict = json.loads(request.body)
+    error = validate_data(data_json)
+
+    if len(error['errors']) > 0:
+        return HttpResponse(json.dumps(error), content_type="application/json")
+
+    user = request.user
     data_json['general']['token_poll'] = generate_token_random(data_json['general']['name_poll'])
-    data_json['general']['user_poll_id'] = user.id_person
+    data_json['general']['user_poll_id'] = user.person_user_id
     print(json.dumps(data_json))
     id_poll: int = 0
-    cursor.execute('call procedure_save_poll(%s, %s)', [json.dumps(data_json), id_poll])
-    print(str_data)
-    return HttpResponse(json.dumps({"test": "Esta es una prueba"}))
+    try:
+        cursor.execute('call procedure_save_poll(%s)', [json.dumps(data_json)])
+    except Exception as e:
+        print(e)
+        return HttpResponse(json.dumps({"status": "error", "message": "Error al registrar encuesta"}))
+    return HttpResponse(json.dumps({"status": "Succes", "message": "Encuesta registrada correctamente"}))
 
 
 def store_poll_test(request):
@@ -77,7 +88,11 @@ def store_poll_test(request):
     }), content_type='application/json')
 
 
+@login_required(login_url='/login')
 def get_poll(request, token_poll: str):
+    if not check_permissions(request):
+        return render(request, 'errors/403.html')
+
     data: dict = {
         'response': False,
     }
@@ -107,7 +122,11 @@ def store_answer(request, token_poll: str):
     poll = Polls.objects.filter(token_poll=token_poll).first()
 
 
+@login_required(login_url='/login')
 def get_data_poll(request, token_poll: str):
+    if not check_permissions(request):
+        return render(request, 'errors/403.html')
+
     if request.method == 'POST':
         return HttpResponse("Method not allowed")
 
@@ -176,7 +195,8 @@ def generate_token_random(title_question: str) -> str:
 def validate_data(data_json: dict) -> dict:
     error: dict = {
         'status': 'error',
-        'errors': []
+        'errors': [],
+        'message': 'Error al validar los datos'
     }
     error_name_pool = []
     error_objective_pool = []
@@ -244,14 +264,13 @@ def validate_data(data_json: dict) -> dict:
     error['errors'].append({'limit_sample_poll': error_limit_sample_pool, 'field': 'limit_sample_poll'})
     error['errors'].append({'instructions_poll': error_instructions_pool, 'field': 'instructions_poll'})
     error['errors'].append({'questions': error_questions, 'field': 'questions'})
-    count_error: int = 0;
+    count_error: int = 0
     for e in error['errors']:
+        print(e)
         if len(e[e['field']]) > 0:
             count_error += 1
 
     if count_error > 0:
-        print("Entra a los errores")
-        print(error)
         return error
 
     return {'status': 'error', 'errors': []}
