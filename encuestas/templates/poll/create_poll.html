@@ -12,6 +12,17 @@
 
     </head>
     <body>
+        <div class = "toast-container position-fixed top-0 end-0 p-3" id = "toast_container">
+            <div class = "toast align-items-end text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" id = "toast">
+                <div class = "d-flex">
+                    <div class = "toast-body" id = "message_alert">
+                        Encuesta creada correctamente
+                    </div>
+                    <button type = "button" class = "btn-close btn-close-white me-2 m-auto"></button>
+                </div>
+            </div>
+        </div>
+
         <main class = "card w-75 m-auto mb-5 pb-5">
             <h1 class = "h1 m-auto pt-5 mb-5">Creacion de encuesta</h1>
             {% csrf_token %}

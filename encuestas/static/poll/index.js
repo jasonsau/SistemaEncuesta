@@ -11,6 +11,8 @@ const dateEndPoll = document.querySelector('#date_end_poll');
 const limitSamplePoll = document.querySelector('#limit_sample_poll');
 const savePoll = document.querySelector('#save-poll');
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]');
+const messageAlert = document.querySelector('#message_alert');
+const toast = document.querySelector('#toast');
 
 
 let options = '';
@@ -203,17 +205,19 @@ function savePollRequest() {
     })
         .then(response => response.json())
         .then(data => {
+            messageAlert.innerHTML = data.message;
+            toast.classList.add('show');
             if(data.status === 'error') {
                 if(data.errors) {
+                    toast.classList.remove('text-bg-success');
+                    toast.classList.add('text-bg-danger');
                     const errors = data.errors;
                     errors.forEach(error => {
                         if(error[error.field].length > 0) {
-
                             if(error.field === 'questions') {
                                 document.querySelector('#question_error').innerHTML = error['questions'][0];
                                 document.querySelector('#question_error').style.display = 'block';
                             }
-
                             document.querySelector(`#${error.field}`).classList.add('is-invalid');
                             document.querySelector(`#${error.field}_error`).innerHTML = error[error.field][0];
                         } else {
@@ -225,8 +229,21 @@ function savePollRequest() {
                         }
                     });
                 }
-
+            }
+            if(data.status === 'Succes') {
+                toast.classList.remove('text-bg-danger');
+                toast.classList.add('text-bg-success');
+                savePoll.style.disabled = true;
+                setTimeout(() => {
+                    window.location.href = '/home';
+                }, 2000)
             }
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => {
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000)
+        })
+
 }
