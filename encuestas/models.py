@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 
 class Persons(models.Model):
@@ -6,23 +7,27 @@ class Persons(models.Model):
     name_person = models.TextField(max_length=50)
     birth_date_person = models.DateField()
     img_person = models.TextField(max_length=250, null=True)
-    email_person = models.TextField(max_length=50)
+    email_person = models.TextField(max_length=50, unique=True)
     genre_person = models.TextField(max_length=1)
     active_person = models.BooleanField(default=True)
 
 
-class Users(models.Model):
+class Users(AbstractBaseUser):
     id_user = models.AutoField(primary_key=True)
-    username_user = models.TextField(max_length=50)
+    username_user = models.TextField(max_length=50, unique=True)
     password_user = models.TextField(max_length=255)
     person_user = models.ForeignKey(Persons, on_delete=models.CASCADE)
     token_user = models.TextField(max_length=255, null=True)
     fails_login_user = models.IntegerField(default=0)
     active_person = models.BooleanField(default=True)
 
+    USERNAME_FIELD = 'username_user'
+
+
 
 class Roles(models.Model):
     id_rol = models.AutoField(primary_key=True)
+    code_rol = models.TextField(max_length=50, unique=True)
     name_rol = models.TextField(max_length=50)
     description_rol = models.TextField(max_length=250)
     active_rol = models.BooleanField(default=True)
@@ -37,6 +42,7 @@ class UserRoles(models.Model):
 class Permissions(models.Model):
     id_permission = models.AutoField(primary_key=True)
     name_permission = models.TextField(max_length=50)
+    route_permission = models.TextField(max_length=250)
     description_permission = models.TextField(max_length=250)
     active_permission = models.BooleanField(default=True)
 
@@ -66,6 +72,7 @@ class Polls(models.Model):
     token_poll = models.TextField(max_length=255, unique=True)
     limit_sample_poll = models.IntegerField(default=10000)
     user_poll = models.ForeignKey(Persons, on_delete=models.CASCADE)
+    public_poll = models.BooleanField(default=False)
 
 
 class TypeQuestion(models.Model):

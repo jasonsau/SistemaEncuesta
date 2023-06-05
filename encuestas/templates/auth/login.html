@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href = "{% static 'poll/index.css' %}" rel = "stylesheet">
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel = "stylesheet">
+    <link href = "{% static 'auth/index.css' %}" rel = "stylesheet">
+</head>
+<body class = "body__login">
+  <div class = "toast-container position-fixed top-0 end-0 p-3" id = "toast_container">
+    <div class = "toast align-items-end text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" id = "toast">
+      <div class = "d-flex">
+        <div class = "toast-body" id = "message_alert">
+          Encuesta creada correctamente
+        </div>
+        <button type = "button" class = "btn-close btn-close-white me-2 m-auto"></button>
+      </div>
+    </div>
+  </div>
+
+  {% csrf_token %}
+
+  <div class = "modal modal-lg" id = "modal_register">
+    <div class = "modal-dialog">
+      <div class = "modal-content">
+        <div class = "modal-header">
+            <h5 class = "modal-title">Registro</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class = "modal-body">
+          <div class="form-outline mb-4">
+            <label class="form-label" for="name_person">Nombre completo</label>
+            <input type="text" id="name_person" class="form-control" />
+            <div class = "invalid-feedback" id = "name_person_error">
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="birth_date_person">Fecha de naciminto</label>
+            <input type="date" id="birth_date_person" class="form-control" />
+            <div class = "invalid-feedback" id = "birth_date_person_error">
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="genre_person">Genero</label>
+            <select class = "form-control" id = "genre_person">
+              <option value = "M">Masculino</option>
+              <option value = "F">Femenino</option>
+            </select>
+            <div class = "invalid-feedback" id = "genre_person_error">
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="email_person">Correo electronico</label>
+            <input class = "form-control" id = "email_person" type = "email">
+            <div class = "invalid-feedback" id = "email_person_error">
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="register_password">Password</label>
+            <input class = "form-control" id = "register_password" type = "password">
+            <div class = "invalid-feedback" id = "register_password_error">
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="confirm_password">Confirmar Password</label>
+            <input class = "form-control" id = "confirm_password" type = "password">
+            <div class = "invalid-feedback" id = "confirm_password_error">
+            </div>
+          </div>
+        </div>
+        <div class = "modal-footer">
+          <button type="button" class="btn btn-primary" id = "btn_register_user">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form class = "form__login">
+    <h1 class = "m-auto mb-5">Inicio de Sesion</h1>
+    <div class="form-outline mb-4">
+      <label class="form-label" for="email">Correo electronico</label>
+      <input type="email" id="email" class="form-control" />
+    </div>
+
+    <div class="form-outline mb-4">
+      <label class="form-label" for="password">Password</label>
+      <input type="password" id="password" class="form-control" />
+    </div>
+
+    <div class="row mb-4">
+      <div class="col">
+        <a href="#!">Olvidaste tu password?</a>
+      </div>
+    </div>
+
+    <!-- Submit button -->
+    <button type="button" class="btn btn-primary btn-block mb-4" id = "btn_login">Iniciar Sesion</button>
+
+    <!-- Register buttons -->
+      <button class = "btn btn-secondary btn-block mb-4" id = "button_open_modal">Crear cuenta</button>
+  </form>
+</body>
+<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<script src = "{% static 'auth/index.js' %}">
+</script>
+</html>

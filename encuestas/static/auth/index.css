@@ -1,0 +1,17 @@
+.body__login {
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 15px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.form__login {
+    width: 100%;
+    max-width: 500px;
+    min-width: 333px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin: auto;
+}
