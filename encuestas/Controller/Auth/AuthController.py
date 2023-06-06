@@ -23,12 +23,18 @@ def login_post(request):
     if user is None:
         return HttpResponse(json.dumps({"status": "error", "message": "Creedenciales incorrectas"}))
 
-    auth_login(request, user)
+    if not user.active_person:
+        return HttpResponse(json.dumps({"status": "error", "message": "Su usuario ha sido bloqueado"}))
 
-    print(str(data_json['password'].encode('utf-8')))
-    print(user.password_user.encode('utf-8'))
     if not bcrypt.checkpw(data_json['password'].encode('utf-8'), user.password_user.encode('utf-8')):
+        user.fails_login_user += 1
+        if user.fails_login_user >= 3:
+            user.active_person = False
+            user.fails_login_user = 0
+        user.save()
         return HttpResponse(json.dumps({"status": "error", "message": "Creedenciales incorrectas"}))
+
+    auth_login(request, user)
 
     return HttpResponse(json.dumps({"status": "success", "message": "Bienvenido"}))
 
