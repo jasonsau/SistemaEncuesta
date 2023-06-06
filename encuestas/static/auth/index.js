@@ -15,6 +15,9 @@ const toast = document.querySelector('#toast');
 const btnLogin = document.querySelector('#btn_login');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
+const btnOpenModalRecoverPassword = document.querySelector('#btn_open_modal_recover_password');
+const modalRecoverPassword = document.querySelector('#modal_recover_password');
+const btnRecoverPassword = document.querySelector('#btn_recover_password');
 
 btnLogin.addEventListener('click', (event) => {
     event.preventDefault();
@@ -147,3 +150,50 @@ function cleanCamps() {
         camp.value = '';
     });
 }
+
+btnOpenModalRecoverPassword.addEventListener('click', (event) => {
+    event.preventDefault();
+    modalRecoverPassword.classList.add('fade', 'show');
+    modalRecoverPassword.style.display = 'block';
+});
+
+btnRecoverPassword.addEventListener('click', (event) => {
+    event.preventDefault();
+    const dataJsonRecoverPassword = {
+        'email': document.querySelector('#email_recover_password').value,
+    }
+    fetch('/recover-password', {
+        method: 'POST',
+        body: JSON.stringify(dataJsonRecoverPassword),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken.value,
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            messageAlert.innerHTML = data.message;
+            toast.classList.add('show');
+            if(data.status === 'error') {
+                toast.classList.remove('text-bg-success');
+                toast.classList.add('text-bg-danger');
+            }
+            if(data.status === 'success') {
+                toast.classList.remove('text-bg-danger');
+                toast.classList.add('text-bg-success');
+                modalRecoverPassword.classList.remove('fade', 'show');
+                modalRecoverPassword.style.display = 'none';
+                document.querySelector('#email_recover_password').value = '';
+            }
+        })
+        .finally(() => {
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.remove('text-bg-success');
+                toast.classList.remove('text-bg-danger');
+                toast.style.display = 'none';
+            }, 3000);
+        })
+});
+

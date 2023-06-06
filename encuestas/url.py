@@ -1,6 +1,13 @@
 from django.urls import path
 from .Controller.PollController import create_poll, store_poll, get_poll, get_data_poll, response_poll, get_type_question
-from .Controller.Auth.AuthController import login, register_user, login_post, logout
+from .Controller.Auth.AuthController import \
+    login, \
+    register_user, \
+    login_post, \
+    logout, \
+    recover_password, \
+    recover_password_token, \
+    change_password
 from .Controller.HomeController import home
 
 from . import views
@@ -10,7 +17,9 @@ urlpatterns = [
     path("login", login, name="login"),
     path("login-post", login_post, name="login_post"),
     path("logout", logout, name="logout"),
-
+    path("recover-password", recover_password, name="recover_password"),
+    path("recover-password/<str:token>", recover_password_token, name="recover_password"),
+    path("change-password", change_password, name="change_password"),
 
     path("", views.index, name="index"),
     path("hello-word", views.hello_word, name="hello_word"),

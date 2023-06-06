@@ -80,6 +80,28 @@
     </div>
   </div>
 
+  <div class = "modal modal-lg" id = "modal_recover_password">
+    <div class = "modal-dialog">
+      <div class = "modal-content">
+        <div class = "modal-header">
+          <h5 class = "modal-title">Recuperar password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class = "modal-body">
+          <div class="form-outline mb-4">
+            <label class="form-label" for="email_recover_password">Correo electronico</label>
+            <input class = "form-control" id = "email_recover_password" type = "email">
+            <div class = "invalid-feedback" id = "email_recover_password_error">
+            </div>
+          </div>
+        </div>
+        <div class = "modal-footer">
+          <button type="button" class="btn btn-primary" id = "btn_recover_password">Recuperar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <form class = "form__login">
     <h1 class = "m-auto mb-5">Inicio de Sesion</h1>
     <div class="form-outline mb-4">
@@ -94,7 +116,7 @@
 
     <div class="row mb-4">
       <div class="col">
-        <a href="#!">Olvidaste tu password?</a>
+        <a href="#!" id = "btn_open_modal_recover_password">Olvidaste tu password?</a>
       </div>
     </div>
 

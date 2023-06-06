@@ -1,10 +1,15 @@
 import json
+import uuid
 import bcrypt
+import threading
+import datetime
 from django.shortcuts import render, redirect
 from django.db import connection
 from django.http import HttpResponse
 from ...models import Persons, Users
 from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 
 
 def login(request):
@@ -64,6 +69,89 @@ def register_user(request):
 def logout(request):
     auth_logout(request)
     return redirect('/login')
+
+
+def recover_password(request):
+    if request.method == 'GET':
+        return HttpResponse("Method not allowed")
+
+    data_json = json.loads(request.body)
+    person = Persons.objects.filter(email_person=data_json['email']).first()
+    if person is None:
+        return HttpResponse(json.dumps({"status": "error", "message": "El correo no existe"}))
+
+    user = Users.objects.filter(person_user=person).first()
+    if user is None:
+        return HttpResponse(json.dumps({"status": "error", "message": "El correo no existe"}))
+
+    user.token_user = generate_token()
+    user.save()
+    subject = "Recuperar contraseña"
+    template_name = get_template("auth/recover_password_email.html")
+    content = template_name.render({
+        'name': person.name_person,
+        'url': 'http://localhost:8000/recover-password/' + user.token_user
+    })
+    thread = threading.Thread(target=send_email, args=(subject, content, person.email_person))
+    thread.start()
+
+    return HttpResponse(json.dumps({"status": "success", "message": "Se ha enviado un correo para recuperar contraseña"}))
+
+
+def send_email(subject, content, email):
+    message = EmailMultiAlternatives(
+        subject=subject,
+        from_email='bad115@gmail.com',
+        to=[email],
+    )
+    message.attach_alternative(content, "text/html")
+    message.send()
+
+
+def recover_password_token(request, token):
+    user = Users.objects.filter(token_user=token).first()
+    if user is None:
+        return HttpResponse("Token no valido")
+
+    timestamp_token = token.split(':')[1]
+    timestamp_now = datetime.datetime.now().timestamp()
+    if float(timestamp_token) < timestamp_now:
+        return HttpResponse("Token expirado")
+
+    if request.method == 'GET':
+        return render(request, 'auth/recover_password.html', {'token': token})
+
+
+def change_password(request):
+    if request.method == 'GET':
+        return HttpResponse("Method not allowed")
+
+    data_json = json.loads(request.body)
+    user = Users.objects.filter(token_user=data_json['token']).first()
+    if user is None:
+        return HttpResponse(json.dumps({"status": "error", "message": "Token no valido"}))
+
+    if data_json['password'] == '' or data_json['confirm_password'] == '':
+        return HttpResponse(json.dumps({"status": "error", "message": "Las contraseñas no pueden estar vacias"}))
+
+    if len(data_json['password']) < 8:
+        return HttpResponse(json.dumps({"status": "error", "message": "La contraseña debe tener al menos 8 caracteres"}))
+
+    if data_json['password'] != data_json['confirm_password']:
+        return HttpResponse(json.dumps({"status": "error", "message": "Las contraseñas no coinciden"}))
+
+    password = str(bcrypt.hashpw(
+        data_json['password'].encode('utf-8'),
+        bcrypt.gensalt()
+    )).removeprefix("b'").removesuffix("'")
+
+    user.password_user = password
+    user.password = password
+    user.token_user = None
+    user.fails_login_user = 0
+    user.active_person = True
+    user.save()
+    return HttpResponse(json.dumps({"status": "success", "message": "Contraseña cambiada correctamente"}))
 
 
 def validate_data(data_json: dict) -> dict:
@@ -135,5 +223,14 @@ def check_permissions(request):
         cursor.callproc('procedure_check_permissions', [request.user.id_user, path_name, result_bool])
         result_bool = cursor.fetchone()[0]
     return result_bool
+
+
+def generate_token():
+    #date 30 minuts after
+    date = datetime.datetime.now().timestamp() + 1800
+
+    token = uuid.uuid4()
+    return str(token) + ':' + str(date)
+
 
 
